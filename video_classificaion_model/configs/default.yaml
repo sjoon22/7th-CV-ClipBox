@@ -1,0 +1,28 @@
+# ==========================
+# DATA
+# ==========================
+data_root: /data/datasets/car_accident
+image_size: 224
+batch_size: 8
+num_workers: 8
+
+# ==========================
+# MODEL
+# ==========================
+hidden_dim: 256
+num_layers: 1
+dropout: 0.6
+
+# ==========================
+# TRAINING
+# ==========================
+num_epochs: 10
+eval_interval: 2
+learning_rate: 0.0005
+gpu_ids: [0, 1, 2, 3, 4, 5, 6, 7]
+
+
+# ==========================
+# LOGGING
+# ==========================
+log_dir: ./logs
