@@ -1,7 +1,0 @@
-scikit-learn>=1.0.2
-tqdm
-pyyaml
-opencv-python
-matplotlib
-tensorboard
-Pillow
