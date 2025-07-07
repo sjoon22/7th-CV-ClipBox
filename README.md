@@ -85,6 +85,4 @@
 
 ![test_video](img/test_video.gif)
 
-- 실제 시스템 동작 과정을 시연 영상에서 확인할 수 있습니다.
-
 ---
