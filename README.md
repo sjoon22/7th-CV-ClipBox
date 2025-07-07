@@ -31,11 +31,6 @@
 - [매일경제: 블랙박스는 있는데 증거는 없다](https://www.mk.co.kr/economy/view.php?sc=50000001&year=2015&no=154937)
 - [네이트뷰: 자동차 블랙박스, 알고 보면 ‘법정 무용지물’ 되는 경우](https://view.nate.com/auto/view/303338/)
 
-#### • 고의 사고로 인한 보험 사기 해결 가능
-- [한국경제: 고의 車사고…보험금 사기 증가](https://www.hankyung.com/article/2025040119051)
-- [세계일보: 블랙박스에 콕 잡힌 ‘보험사기 사례’](https://www.segye.com/newsView/20130618004242)
-- [MBC: 블랙박스로 보험사기 잡는다](https://imnews.imbc.com/replay/2023/nwtoday/article/6471667_36207.html)
-
 ---
 
 ## 🛠️ 3. 해결 방안
