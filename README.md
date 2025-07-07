@@ -69,7 +69,7 @@
 
 ## 🎥 6. 구현 영상
 
-![test_video](img/test_video.gif)
+[![test_video](img/test_video.gif)](https://github.com/user-attachments/assets/3255a950-1477-4bbc-9b1c-cc579bbbb416)
 
 - 실제 시스템 동작 과정을 시연 영상에서 확인할 수 있습니다.
 
