@@ -81,6 +81,6 @@
 
 ## 🎥 6. 구현 영상
 
-![test_video](img/test_video.gif)
+[![test_video](img/test_video.gif)](https://github.com/user-attachments/assets/3255a950-1477-4bbc-9b1c-cc579bbbb416)
 
 ---
