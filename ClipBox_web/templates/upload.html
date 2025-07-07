@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>영상 업로드 - 클립박스</title>
+  <link href="https://cdn.jsdelivr.net/npm/pretendard@1.3.6/dist/web/static/pretendard.css" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Pretendard', sans-serif;
+      background-color: #f5f0e6;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 20%;
+      height: 100vh;
+      background-color: #1e1e2f;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 1.5rem;
+      box-sizing: border-box;
+      z-index: 10;
+    }
+
+    .logo-wrapper {
+      background-color: white;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      padding: 0.5rem 0;
+      margin-bottom: 1.5rem;
+    }
+
+    .logo {
+      width: 100px;
+    }
+
+    .icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+
+    .icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .menu-item {
+      margin: 1rem 0;
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      width: 80%;
+      text-align: center;
+    }
+
+    .menu-item:hover {
+      background-color: #ffffff20;
+      color: #aadfff;
+    }
+
+    .login-button {
+      background-color: #f0f0f0;
+      color: #1e1e2f;
+      font-weight: bold;
+      margin-top: 1rem;
+      width: 70%;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .login-button:hover {
+      background-color: #e0e0e0;
+      transform: scale(1.03);
+    }
+
+    .main {
+      margin-left: 20%;
+      width: 80%;
+      padding: 2rem;
+      overflow-y: auto;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .upload-box {
+    width: 100%;
+    max-width: 630px; /* 420px * 1.5 */
+    height: 390px;    /* 260px * 1.5 */
+    background-color: white;
+    border: 2px dashed #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 1.3rem;
+    cursor: pointer;
+    margin-bottom: 2.5rem;
+    transition: background-color 0.3s;
+  }
+
+    #previewVideo {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+    display: none;
+    border-radius: 10px;  
+  }
+
+    .upload-box:hover {
+      background-color: #f0f0f0;
+    }
+
+    .step-box {
+      width: 100%;
+      max-width: 720px;
+      background-color: white;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.08);
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+      border-radius: 10px;
+    }
+
+    .step-box button {
+      padding: 0.7rem 1.4rem;
+      background-color: #1e1e2f;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-right: 1rem;
+      margin-top: 1rem;
+    }
+
+    video {
+      width: 100%;
+      margin-top: 1rem;
+      border-radius: 10px;
+    }
+
+    .upload-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .plus-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .upload-text {
+      font-size: 1.1rem;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo-wrapper">
+      <img src="/static/images/logo.png" alt="ClipBox Logo" class="logo">
+    </div>
+    <div class="icon">
+      {% if session.profile_image %}
+        <img src="{{ session.profile_image }}" alt="Profile">
+      {% else %}
+        <img src="/static/images/profile.svg" alt="Profile">
+      {% endif %}
+    </div>
+    <div class="menu-item login-button" onclick="location.href='{% if session.nickname %}/logout{% else %}/login{% endif %}'">
+      {% if session.nickname %}로그아웃{% else %}로그인{% endif %}
+    </div>
+    <div class="menu-item" onclick="location.href='/'">HOME</div>
+    <div class="menu-item" onclick="location.href='/upload'">사고 영상 업로드</div>
+    <div class="menu-item" onclick="location.href='/list'">업로드 리스트</div>
+    <div class="menu-item" onclick="location.href='/map'">사건 지도 페이지</div>
+  </div>
+
+  <div class="main">
+    <div class="upload-box" id="uploadBox" onclick="document.getElementById('videoInput').click();">
+      <div class="upload-content" id="uploadPrompt">
+        <div class="plus-icon">＋</div>
+        <div class="upload-text">업로드</div>
+      </div>
+      <video id="previewVideo" controls style="display: none; width: 100%; height: 100%; object-fit: cover;"></video>
+      <input type="file" id="videoInput" accept="video/*" style="display: none;">
+    </div>
+
+    <div class="step-box" id="statusBox">
+      <div id="statusText">영상을 업로드해주세요.</div>
+    </div>
+
+    <div class="step-box" id="extractBox" style="display:none;">
+      <div>사고가 감지되었습니다</div>
+      <button onclick="extract()">영상 추출</button>
+    </div>
+
+    <div class="step-box" id="resultBox" style="display:none;">
+      <div style="font-weight:bold; font-size:1.3rem;">모자이크 처리된 영상</div>
+      <video id="blurredVideo" controls></video>
+      <br>
+      <button id="downloadBtn">영상 다운로드</button>
+      <button id="uploadWebBtn">웹 업로드</button>
+    </div>
+  </div>
+
+  <script>
+  let currentFilename = "";
+  let FRAME_DIR = "";
+
+  document.getElementById('videoInput').addEventListener('change', function() {
+    const file = this.files[0];
+    if (!file) return;
+
+    const preview = document.getElementById('previewVideo');
+    const prompt = document.getElementById('uploadPrompt');
+    const fileURL = URL.createObjectURL(file);
+    preview.src = fileURL;
+    preview.style.display = "block";
+    prompt.style.display = "none";
+
+    const formData = new FormData();
+    formData.append('video', file);
+
+    document.getElementById('statusText').innerText = "사고 판단 중입니다...";
+
+    fetch('/upload-video', {
+      method: 'POST',
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.result === 'normal') {
+        document.getElementById('statusText').innerText = "사고 영상이 아닙니다.";
+      } else {
+        currentFilename = data.filename;
+        FRAME_DIR = data.FRAME_DIR;
+
+        // 기존 메인 내용 숨기기
+        document.querySelectorAll('.upload-box, .step-box').forEach(el => el.style.display = 'none');
+
+        // 사고 감지 UI 추가
+        const main = document.querySelector('.main');
+        let accidentDiv = document.getElementById('accidentDetected');
+        if (!accidentDiv) {
+          // 중앙 정렬을 위해 main에 스타일 추가
+          main.style.minHeight = "100vh";
+          main.style.display = "flex";
+          main.style.flexDirection = "column";
+          main.style.alignItems = "center";
+          main.style.justifyContent = "center";
+
+          accidentDiv = document.createElement('div');
+          accidentDiv.id = 'accidentDetected';
+          accidentDiv.style.display = 'flex';
+          accidentDiv.style.flexDirection = 'column';
+          accidentDiv.style.alignItems = 'center';
+          accidentDiv.style.justifyContent = 'center';
+          accidentDiv.style.height = '100vh'; // 세로 중앙 정렬
+
+          accidentDiv.innerHTML = `
+            <img src="/static/images/accident_cut.jpg"
+            alt="사고 감지"
+            style="width:calc(2.8rem * 15); max-width:90vw; margin-bottom:2.5rem; border:4px solid #d32f2f; border-radius:16px;">
+            <div style="font-size:2.8rem; font-weight:bold; color:#d32f2f; margin-bottom:2.2rem;">사고가 감지되었습니다!</div>
+            <button style="padding:1rem 2.5rem; font-size:1.2rem; background:#1e1e2f; color:white; border:none; border-radius:8px; cursor:pointer;" onclick="extract()">영상 추출</button>
+          `;
+          main.appendChild(accidentDiv);
+        } else {
+          accidentDiv.style.display = 'flex';
+        }
+      }
+    });
+  });
+
+  function extract() {
+  // 기존 내용 모두 숨기기
+  document.querySelectorAll('.upload-box, .step-box, #accidentDetected').forEach(el => el.style.display = 'none');
+
+  const main = document.querySelector('.main');
+  // 기존 로딩/이미지 div 있으면 제거
+  let loadingDiv = document.getElementById('blurLoadingDiv');
+  if (loadingDiv) loadingDiv.remove();
+
+  // 블러 처리중 메시지 + 로딩 이모지 (처음엔 이미지 없음)
+  loadingDiv = document.createElement('div');
+  loadingDiv.id = 'blurLoadingDiv';
+  loadingDiv.style.display = 'flex';
+  loadingDiv.style.flexDirection = 'column';
+  loadingDiv.style.alignItems = 'center';
+  loadingDiv.style.justifyContent = 'center';
+  loadingDiv.style.height = '70vh';
+
+  loadingDiv.innerHTML = `
+    <div id="bboxImageWrapper"></div>
+    <div style="font-size:2.2rem; font-weight:bold; color:#1e1e2f; margin-bottom:2.2rem;">
+      블러 처리된 영상을 생성 중입니다..<span style="font-size:2.2rem; margin-left:0.7rem;" class="spin-emoji">🔄</span>
+    </div>
+  `;
+  main.appendChild(loadingDiv);
+
+  // 이모지 회전 애니메이션 추가
+  if (!document.getElementById('spin-emoji-style')) {
+    const style = document.createElement('style');
+    style.id = 'spin-emoji-style';
+    style.innerHTML = `
+      .spin-emoji {
+        display: inline-block;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        100% { transform: rotate(360deg);}
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // 10초 후부터 10초 간격으로 bbox1~7 이미지 순차 표시
+  const bboxWrapper = () => document.getElementById('bboxImageWrapper');
+  let bboxIdx = 1;
+  let bboxInterval = null;
+
+  setTimeout(() => {
+    // 첫 이미지 표시
+    if (bboxWrapper()) {
+      bboxWrapper().innerHTML = `
+        <img src="/static/images/accident_bbox1.jpg"
+          alt="bbox1"
+          style="width:calc(2.8rem * 18); max-width:98vw; margin-bottom:2.5rem; border:4px solid #d32f2f; border-radius:16px;">
+      `;
+    }
+    bboxIdx = 2;
+    bboxInterval = setInterval(() => {
+      if (bboxIdx > 7) {
+        clearInterval(bboxInterval);
+        return;
+      }
+      if (bboxWrapper()) {
+        bboxWrapper().innerHTML = `
+          <img src="/static/images/accident_bbox${bboxIdx}.jpg"
+            alt="bbox${bboxIdx}"
+            style="width:calc(2.8rem * 18); max-width:98vw; margin-bottom:2.5rem; border:4px solid #d32f2f; border-radius:16px;">
+        `;
+      }
+      bboxIdx++;
+    }, 10000);
+  }, 10000);
+
+  // 실제 영상 생성 요청
+  fetch('/extract', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ filename: currentFilename, FRAME_DIR: FRAME_DIR })
+  })
+  .then(res => res.json())
+  .then(data => {
+    // 로딩/이미지 div 숨기기
+    if (loadingDiv) loadingDiv.remove();
+    if (bboxInterval) clearInterval(bboxInterval);
+
+    // 결과 박스만 표시
+    const video = document.getElementById('blurredVideo');
+    video.src = '/static/processed/' + data.processed_filename;
+    video.load();
+
+    document.getElementById('resultBox').style.display = "block";
+
+    document.getElementById('downloadBtn').onclick = function () {
+      window.location.href = '/download/' + data.processed_filename;
+    };
+
+    document.getElementById('uploadWebBtn').onclick = function () {
+      const dummyLat = 37.5665 + Math.random() * 0.01;
+      const dummyLng = 126.9780 + Math.random() * 0.01;
+
+      fetch('/upload-to-list', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          filename: data.processed_filename,
+          lat: dummyLat,
+          lng: dummyLng
+        })
+      }).then(() => {
+        alert('웹 업로드 완료! 지도에 반영됩니다.');
+      });
+    };
+  });
+}
+</script>
+</body>
+</html>

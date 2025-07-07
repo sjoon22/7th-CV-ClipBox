@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>로그인 - 클립박스</title>
+  <link href="https://cdn.jsdelivr.net/npm/pretendard@1.3.6/dist/web/static/pretendard.css" rel="stylesheet" />
+  <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Pretendard', sans-serif;
+      display: flex;
+      background-color: #f5f0e6;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 20%;
+      height: 100vh;
+      background-color: #1e1e2f;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 1.5rem;
+      box-sizing: border-box;
+      z-index: 10;
+    }
+
+    .logo-wrapper {
+      background-color: white;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      padding: 0.5rem 0;
+      margin-bottom: 1.5rem;
+    }
+
+    .logo {
+      width: 100px;
+    }
+
+    .icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+
+    .icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .menu-item {
+      margin: 1rem 0;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      width: 80%;
+      text-align: center;
+    }
+
+    .menu-item:hover {
+      background-color: #ffffff20;
+      color: #aadfff;
+    }
+
+    .main {
+        
+      margin-left: 20%;
+      width: 80%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f5f0e6;
+    }
+
+    .login-card {
+      background-color: white;
+      padding: 3rem 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      min-width: 300px;
+    }
+
+    .login-title {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #1e1e2f;
+      margin-bottom: 2rem;
+    }
+
+    .kakao-login-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .kakao-login-btn img {
+      width: 260px;
+      height: auto;
+      transition: transform 0.2s ease;
+    }
+
+    .kakao-login-btn img:hover {
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 25%;
+      }
+      .main {
+        margin-left: 25%;
+        width: 75%;
+        padding: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .sidebar {
+        display: none;
+      }
+      .main {
+        margin-left: 0;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo-wrapper">
+      <img src="/static/images/logo.png" alt="ClipBox Logo" class="logo">
+    </div>
+    <div class="icon">
+      {% if session.profile_image %}
+        <img src="{{ session.profile_image }}" alt="Profile">
+      {% else %}
+        <img src="/static/images/profile.svg" alt="Profile">
+      {% endif %}
+    </div>
+    <div class="menu-item login-button" onclick="location.href='{% if session.nickname %}/logout{% else %}/login{% endif %}'">
+      {% if session.nickname %}로그아웃{% else %}로그인{% endif %}
+    </div>
+    <div class="menu-item" onclick="location.href='/'">HOME</div>
+    <div class="menu-item" onclick="location.href='/upload'">사고 영상 업로드</div>
+    <div class="menu-item" onclick="location.href='/list'">업로드 리스트</div>
+    <div class="menu-item" onclick="location.href='/map'">사건 지도 페이지</div>
+  </div>
+
+  <div class="main">
+    <div class="login-card">
+      <div class="login-title">ClipBox 로그인</div>
+      <button class="kakao-login-btn" onclick="loginWithKakao()">
+        <img src="/static/images/kakao.png" alt="카카오 로그인">
+      </button>
+    </div>
+  </div>
+
+  <script>
+    Kakao.init('1799c47d31357db104d2c4d0401dbb46');
+    console.log('Kakao SDK initialized:', Kakao.isInitialized());
+
+    function loginWithKakao() {
+      Kakao.Auth.login({
+        success: function(authObj) {
+          fetch('/kakao-login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ token: authObj.access_token })
+          })
+          .then(res => res.json())
+          .then(data => {
+            alert(`환영합니다, ${data.nickname}님`);
+            window.location.href = '/';
+          })
+          .catch(err => {
+            console.error('서버 오류', err);
+            alert('로그인 처리 중 오류가 발생했습니다.');
+          });
+        },
+        fail: function(err) {
+          console.error(err);
+          alert('카카오 로그인 실패');
+        }
+      });
+    }
+  </script>
+</body>
+</html>
