@@ -68,9 +68,6 @@
 - 100프레임씩, stride 20 sliding window 방식으로 사고 포함 여부를 분류합니다.
 - 최초 사고 구간 100프레임과 150프레임을 합쳐 250프레임을 추출합니다.
 
-![4f6cf8ed-7eec-4aa8-bdbe-dc8fa693d6f4](img/4f6cf8ed-7eec-4aa8-bdbe-dc8fa693d6f4.png)
-
-- 최종 모델 하이퍼파라미터는 위와 같습니다.
 
 ![face_recognition_YOLO](img/face_recognition_YOLO.png)
 
