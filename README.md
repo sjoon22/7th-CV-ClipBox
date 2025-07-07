@@ -18,11 +18,23 @@
 - 사각지대, 영상 손상, 영상 미존재 등 한계가 있습니다.
 - 사고 차량 블랙박스만으로는 한계점이 존재합니다.
 
-**참고 기사 및 특허**
+---
 
-- [YTN: "블랙박스, 사고 순간 못 잡았다"](https://www.ytn.co.kr/_ln/0103_201808110233122382)
-- [KBS: "보험사기 잡는 블랙박스, 맹점은?"](https://news.kbs.co.kr/news/pc/view/view.do?ncd=4141882)
-- [구글 특허: 블랙박스 사고 영상 공유 시스템](https://patents.google.com/patent/KR20190100503A/ko)
+### 참고 사례 및 기사
+
+#### • 목격자의 블랙박스로 도움받은 사례
+- [YTN: 누명 벗겨준 '목격자 블랙박스'가 선행으로 이어진 사연](https://www.ytn.co.kr/_ln/0103_201808110233122382)
+- [국민일보: “제보자 덕분에 무죄”…목격자 블랙박스 영상 역할](https://www.kmib.co.kr/article/view.asp?arcid=0020263335)
+
+#### • 사고 발생 시, 자신의 블랙박스 이상으로 피해 입증 불가 사례
+- [KBS: 블랙박스 믿었다가…사고 영상만 없다고?](https://news.kbs.co.kr/news/pc/view/view.do?ncd=3422359)
+- [매일경제: 블랙박스는 있는데 증거는 없다](https://www.mk.co.kr/economy/view.php?sc=50000001&year=2015&no=154937)
+- [네이트뷰: 자동차 블랙박스, 알고 보면 ‘법정 무용지물’ 되는 경우](https://view.nate.com/auto/view/303338/)
+
+#### • 고의 사고로 인한 보험 사기 해결 가능
+- [한국경제: 고의 車사고…보험금 사기 증가](https://www.hankyung.com/article/2025040119051)
+- [세계일보: 블랙박스에 콕 잡힌 ‘보험사기 사례’](https://www.segye.com/newsView/20130618004242)
+- [MBC: 블랙박스로 보험사기 잡는다](https://imnews.imbc.com/replay/2023/nwtoday/article/6471667_36207.html)
 
 ---
 
@@ -34,6 +46,8 @@
 - 사고 영상은 자동 수집 및 분류됩니다.
 - 번호판과 얼굴 등 개인정보는 자동 블러 처리됩니다.
 - 영상은 실시간으로 업로드 및 공유됩니다.
+
+- [YTN: 누명 벗겨준 '목격자 블랙박스'가 선행으로 이어진 사연](https://www.ytn.co.kr/_ln/0103_201808110233122382)
 
 ---
 
@@ -58,7 +72,11 @@
 - LSTM으로 프레임 순차성을 반영합니다.
 - 100프레임씩, stride 20 sliding window 방식으로 사고 포함 여부를 분류합니다.
 - 최초 사고 구간 100프레임과 150프레임을 합쳐 250프레임을 추출합니다.
-  
+
+![4f6cf8ed-7eec-4aa8-bdbe-dc8fa693d6f4](img/4f6cf8ed-7eec-4aa8-bdbe-dc8fa693d6f4.png)
+
+- 최종 모델 하이퍼파라미터는 위와 같습니다.
+
 ![face_recognition_YOLO](img/face_recognition_YOLO.png)
 
 - Task2 얼굴 탐지는 Dlib(face_recognition) 기반으로, HOG와 SVM을 사용해 실시간 얼굴 탐지가 가능합니다.
@@ -69,7 +87,7 @@
 
 ## 🎥 6. 구현 영상
 
-[![test_video](img/test_video.gif)](https://github.com/user-attachments/assets/3255a950-1477-4bbc-9b1c-cc579bbbb416)
+![test_video](img/test_video.gif)
 
 - 실제 시스템 동작 과정을 시연 영상에서 확인할 수 있습니다.
 
